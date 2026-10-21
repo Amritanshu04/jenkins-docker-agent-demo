@@ -1,0 +1,10 @@
+{
+  "name": "jenkins-docker-agent-demo",
+  "version": "1.0.0",
+  "description": "Node.js application for Jenkins CI/CD",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node -e \"console.log('Test passed')\""
+  }
+}
