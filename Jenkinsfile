@@ -1,10 +1,6 @@
 
 pipeline {
-    agent {
-        docker {
-            image 'node:22-alpine'
-        }
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -15,20 +11,37 @@ pipeline {
 
         stage('Check Node.js') {
             steps {
-                sh 'node --version'
-                sh 'npm --version'
+                sh '''
+                    docker run --rm \
+                      -v "$WORKSPACE:/app" \
+                      -w /app \
+                      node:22-alpine \
+                      sh -c 'node --version && npm --version'
+                '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                sh '''
+                    docker run --rm \
+                      -v "$WORKSPACE:/app" \
+                      -w /app \
+                      node:22-alpine \
+                      npm ci
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh '''
+                    docker run --rm \
+                      -v "$WORKSPACE:/app" \
+                      -w /app \
+                      node:22-alpine \
+                      npm test
+                '''
             }
         }
 
@@ -48,6 +61,12 @@ pipeline {
                     docker rm -f jenkins-demo-test
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker image ls jenkins-docker-agent-demo:latest || true'
         }
     }
 }
