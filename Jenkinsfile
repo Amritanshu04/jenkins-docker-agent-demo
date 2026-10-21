@@ -1,10 +1,6 @@
 
 pipeline {
-    agent {
-        docker {
-            image 'node:22-alpine'
-        }
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -20,9 +16,9 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm ci'
             }
         }
 
@@ -32,10 +28,28 @@ pipeline {
             }
         }
 
-        stage('Run Application') {
+        stage('Build Docker Image') {
             steps {
-                sh 'npm start'
+                sh 'docker build -t jenkins-docker-agent-demo:latest .'
             }
+        }
+
+        stage('Run Container Test') {
+            steps {
+                sh '''
+                    docker rm -f jenkins-demo-test 2>/dev/null || true
+                    docker run -d --name jenkins-demo-test jenkins-docker-agent-demo:latest
+                    sleep 2
+                    docker logs jenkins-demo-test
+                    docker rm -f jenkins-demo-test
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker image ls jenkins-docker-agent-demo:latest || true'
         }
     }
 }
