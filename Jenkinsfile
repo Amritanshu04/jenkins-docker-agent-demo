@@ -1,6 +1,10 @@
 
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:22-alpine'
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -44,12 +48,6 @@ pipeline {
                     docker rm -f jenkins-demo-test
                 '''
             }
-        }
-    }
-
-    post {
-        always {
-            sh 'docker image ls jenkins-docker-agent-demo:latest || true'
         }
     }
 }
