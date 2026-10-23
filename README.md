@@ -60,23 +60,18 @@ Executes `npm test` to validate the application's configured test command.
 
 ### 5. Docker Image Build
 Builds a custom image using the project's Dockerfile.
-
-![Docker Image Build](screenshots/03-docker-image-build.png)
-
 ```bash
 docker build -t jenkins-docker-agent-demo:latest .
 ```
-
 ### 6. Container Execution Test
 Runs a container from the custom image, checks its logs, and removes the temporary test container.
-![Jenkins pipeline-stages](screenshots/02-pipeline-stages.png)
-
 
 ```bash
 docker run -d --name jenkins-demo-test jenkins-docker-agent-demo:latest
 docker logs jenkins-demo-test
 docker rm -f jenkins-demo-test
 ```
+![Jenkins pipeline-stages](screenshots/02-pipeline-stages.png)
 
 ## Dockerfile
 
@@ -97,7 +92,7 @@ EXPOSE 3000
 
 CMD ["npm", "start"]
 ```
-
+![Docker Image Build](screenshots/03-docker-image-build.png)
 ![Container Execution](screenshots/04-container-output.png)
 
 ## Successful Build Results
@@ -111,9 +106,7 @@ The pipeline completed successfully with the following results:
 - Docker image build: Passed
 - Container execution and log verification: Passed
 - Jenkins build status: `SUCCESS`
-
-![Jenkins Build Success](screenshots/01-jenkins-success.png)
-
+  
 **Application output:**
 
 ```text
@@ -121,6 +114,8 @@ Hello from Jenkins and Docker!
 ```
 
 **Docker image:** `jenkins-docker-agent-demo:latest`
+
+![Jenkins Build Success](screenshots/01-jenkins-success.png)
 
 ## What I Learned
 
